@@ -1,4 +1,6 @@
 PODS:
+  - bonsoir (1.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - video_player (0.0.1):
     - Flutter
@@ -6,11 +8,14 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - bonsoir (from `.symlinks/plugins/bonsoir/ios`)
   - Flutter (from `Flutter`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
 EXTERNAL SOURCES:
+  bonsoir:
+    :path: ".symlinks/plugins/bonsoir/ios"
   Flutter:
     :path: Flutter
   video_player:
@@ -19,6 +24,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
+  bonsoir: c97724f65041a4068af8ab5f3449ae7f58b725b1
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   video_player: ecd305f42e9044793efd34846e1ce64c31ea6fcb
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f

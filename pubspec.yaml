@@ -13,6 +13,7 @@ dependencies:
   chewie:
   video_player:
   get:
+  cast: ^1.1.0
   
   cupertino_icons: ^1.0.2
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:poc_video_player/cast.dart';
 import 'package:poc_video_player/chewie_list_item.dart';
 import 'package:video_player/video_player.dart';
 
@@ -27,6 +28,7 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          const Cast(),
           ChewieListItem(
             videoPlayerController: VideoPlayerController.asset('assets/vd_teste_yt.mp4'),
             loop: true,
