@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   String url = 'https://stream.mux.com/Zub00MY8X01YIMm9UEf4Oe8R6Wd4wGsZu2fU7B7qx3iD4.m3u8';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +29,10 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Cast(),
+          ElevatedButton(
+            onPressed: () => Cast(),
+            child: Cast(),
+          ),
           ChewieListItem(
             videoPlayerController: VideoPlayerController.asset('assets/vd_teste_yt.mp4'),
             loop: true,
