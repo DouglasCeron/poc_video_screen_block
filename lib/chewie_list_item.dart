@@ -5,6 +5,7 @@ import 'package:video_player/video_player.dart';
 
 class ChewieListItem extends StatefulWidget {
   final VideoPlayerController? videoPlayerController;
+  String url = 'https://stream.mux.com/Zub00MY8X01YIMm9UEf4Oe8R6Wd4wGsZu2fU7B7qx3iD4.m3u8';
 
   final bool? loop;
 
@@ -19,6 +20,8 @@ class ChewieListItem extends StatefulWidget {
 
 class _ChewieListItemState extends State<ChewieListItem> {
   ChewieController? _chewieController;
+  late VideoPlayerController _videoPlayerController1;
+
   bool isPlaying = false;
   Widget? image = Image.asset(
     'assets/hubla_img.jpeg',
@@ -26,10 +29,12 @@ class _ChewieListItemState extends State<ChewieListItem> {
     width: double.infinity,
     fit: BoxFit.fill,
   );
+
   @override
   void initState() {
-    videoListener();
     super.initState();
+    videoListener();
+    initializePlayer();
   }
 
   @override
@@ -52,23 +57,40 @@ class _ChewieListItemState extends State<ChewieListItem> {
     );
   }
 
-  chewieController() {
+  Future<void> initializePlayer() async {
+    _videoPlayerController1 = VideoPlayerController.network(widget.url);
+
+    await Future.wait([
+      _videoPlayerController1.initialize(),
+    ]);
+    int currPlayIndex = 0;
+
+    Future<void> toggleVideo() async {
+      await _videoPlayerController1.pause();
+      currPlayIndex = currPlayIndex == 0 ? 1 : 0;
+      await initializePlayer();
+    }
+  }
+
+  ChewieController chewieController() {
     return _chewieController = ChewieController(
+      showControls: true,
+      aspectRatio: 1 / 1,
+      autoInitialize: true,
+      looping: widget.loop!,
+      overlay: getOverlay(),
+      showControlsOnInitialize: false,
+      videoPlayerController: widget.videoPlayerController!,
       deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
       deviceOrientationsOnEnterFullScreen: [DeviceOrientation.landscapeLeft],
-      videoPlayerController: widget.videoPlayerController!,
-      overlay: getOverlay(),
-      aspectRatio: 1 / 1,
-      looping: widget.loop!,
-      autoInitialize: true,
-      showControls: true,
-      showControlsOnInitialize: false,
       errorBuilder: (context, errorMessage) {
         return Center(
-          child: Text(errorMessage,
-              style: const TextStyle(
-                color: Colors.white,
-              )),
+          child: Text(
+            errorMessage,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
         );
       },
     );
@@ -117,7 +139,8 @@ class _ChewieListItemState extends State<ChewieListItem> {
   @override
   void dispose() {
     super.dispose();
-    widget.videoPlayerController?.dispose();
     _chewieController?.dispose();
+    widget.videoPlayerController?.dispose();
+    widget.videoPlayerController!.removeListener(checkVideo);
   }
 }
