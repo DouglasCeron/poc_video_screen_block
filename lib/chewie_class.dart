@@ -3,24 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
-class ChewieListItem extends StatefulWidget {
+class ChewieClass extends StatefulWidget {
   final VideoPlayerController? videoPlayerController;
-
   final bool? loop;
+  static int buildCount = 0;
+  static int initStateCount = 0;
 
-  ChewieListItem({
+  ChewieClass({
     @required this.videoPlayerController,
     this.loop,
   });
 
   @override
-  _ChewieListItemState createState() => _ChewieListItemState();
+  _ChewieClassState createState() => _ChewieClassState();
 }
 
-class _ChewieListItemState extends State<ChewieListItem> {
+class _ChewieClassState extends State<ChewieClass> {
   ChewieController? _chewieController;
 
   bool isPlaying = false;
+
   Widget? image = Image.asset(
     'assets/hubla_img.jpeg',
     height: double.infinity,
@@ -31,7 +33,14 @@ class _ChewieListItemState extends State<ChewieListItem> {
   @override
   void initState() {
     super.initState();
-    _chewieController = ChewieController(
+    _chewieController = chewieController();
+    videoListener();
+
+    print('####### Contador InitState ${++ChewieClass.initStateCount} #########');
+  }
+
+  chewieController() {
+    return ChewieController(
       showControls: true,
       aspectRatio: 1 / 1,
       autoInitialize: true,
@@ -52,27 +61,6 @@ class _ChewieListItemState extends State<ChewieListItem> {
         );
       },
     );
-    videoListener();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    var prop = height / width;
-
-    return Column(
-      children: [
-        Container(
-          color: Colors.black,
-          padding: EdgeInsets.symmetric(vertical: 8 * prop),
-          height: height * 0.3,
-          child: Chewie(
-            controller: _chewieController!,
-          ),
-        ),
-      ],
-    );
   }
 
   void videoListener() {
@@ -80,8 +68,6 @@ class _ChewieListItemState extends State<ChewieListItem> {
   }
 
   void checkVideo() {
-    // Implement your calls inside these conditions' bodies :
-
     int? secondsPosition = widget.videoPlayerController?.value.position.inSeconds;
     int? secondsDuration = widget.videoPlayerController!.value.duration.inSeconds;
     int? minutesPosition = widget.videoPlayerController!.value.position.inMinutes;
@@ -108,7 +94,7 @@ class _ChewieListItemState extends State<ChewieListItem> {
 
   Widget? getOverlay() {
     if (isPlaying) {
-      print('playing');
+      print('Video is playing');
       return Container();
     } else {
       return image;
@@ -118,8 +104,28 @@ class _ChewieListItemState extends State<ChewieListItem> {
   @override
   void dispose() {
     super.dispose();
-    _chewieController?.dispose();
-    widget.videoPlayerController?.dispose();
-    widget.videoPlayerController!.removeListener(checkVideo);
+    widget.videoPlayerController!.dispose();
+    _chewieController!.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    var prop = height / width;
+
+    print('####### Contador build ${++ChewieClass.buildCount} #########');
+    return Column(
+      children: [
+        Container(
+          color: Colors.black,
+          padding: EdgeInsets.symmetric(vertical: 8 * prop),
+          height: height * 0.3,
+          child: Chewie(
+            controller: _chewieController!,
+          ),
+        ),
+      ],
+    );
   }
 }

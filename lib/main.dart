@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:poc_video_player/cast.dart';
-import 'package:poc_video_player/chewie_demo.dart';
+import 'package:poc_video_player/chewie_class.dart';
 import 'package:poc_video_player/chewie_list_item.dart';
 import 'package:video_player/video_player.dart';
 
@@ -18,14 +17,18 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  ChewieListItem chewieListItem = ChewieListItem();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Video Player'),
+      appBar: AppBar(
+        title: const Text('Video Player'),
+      ),
+      body: ChewieClass(
+        videoPlayerController: VideoPlayerController.network(
+          "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
         ),
-        body: ChewieDemo());
+        loop: false,
+      ),
+    );
   }
 }
