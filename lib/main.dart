@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:poc_video_player/better_player.dart';
 import 'package:poc_video_player/cast.dart';
 import 'package:poc_video_player/chewie_class.dart';
-import 'package:poc_video_player/chewie_list_item.dart';
-import 'package:video_player/video_player.dart';
-import 'package:better_player/better_player.dart';
 
 void main() => runApp(MyApp());
 
