@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ChewieClass extends StatefulWidget {
   final VideoPlayerController? videoPlayerController;
@@ -21,6 +26,10 @@ class ChewieClass extends StatefulWidget {
 class _ChewieClassState extends State<ChewieClass> {
   ChewieController? _chewieController;
 
+  VideoPlayerController? videoPlayerController1;
+  ChewieController? _chewieController1;
+  String? url = "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4";
+  Uint8List? imageBytes;
   bool isPlaying = false;
 
   Widget? image = Image.asset(
@@ -30,102 +39,198 @@ class _ChewieClassState extends State<ChewieClass> {
     fit: BoxFit.fill,
   );
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _chewieController = chewieController();
+  //   videoListener();
+
+  //   print('####### Contador InitState ${++ChewieClass.initStateCount} #########');
+  // }
+
+  // chewieController() {
+  //   return ChewieController(
+  //     showControls: true,
+  //     aspectRatio: 1 / 1,
+  //     autoInitialize: true,
+  //     looping: widget.loop!,
+  //     //overlay: getOverlay(),
+  //     showControlsOnInitialize: false,
+  //     videoPlayerController: widget.videoPlayerController!,
+  //     deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+  //     deviceOrientationsOnEnterFullScreen: [DeviceOrientation.landscapeLeft],
+  //     errorBuilder: (context, errorMessage) {
+  //       return Center(
+  //         child: Text(
+  //           errorMessage,
+  //           style: const TextStyle(
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  // void videoListener() {
+  //   widget.videoPlayerController!.addListener(checkVideo);
+  // }
+
+  // void checkVideo() {
+  //   int? secondsPosition = widget.videoPlayerController?.value.position.inSeconds;
+  //   int? secondsDuration = widget.videoPlayerController!.value.duration.inSeconds;
+  //   int? minutesPosition = widget.videoPlayerController!.value.position.inMinutes;
+  //   Duration? actualPosition = widget.videoPlayerController?.value.position;
+  //   Duration? videoDuration = widget.videoPlayerController?.value.duration;
+
+  //   if (actualPosition == const Duration(seconds: 0, minutes: 0, hours: 0)) {
+  //     print('video Started');
+  //   }
+  //   if (widget.videoPlayerController!.value.isPlaying) {
+  //     setState(() {
+  //       print('playing setState');
+
+  //       isPlaying = true;
+  //     });
+  //   }
+  //   if (secondsPosition! <= secondsDuration) {
+  //     print('minutes:$minutesPosition, seconds:$secondsPosition');
+  //   }
+  //   if (actualPosition == videoDuration) {
+  //     print('video Ended');
+  //   }
+  // }
+
+  // Widget? getOverlay() {
+  //   if (isPlaying) {
+  //     print('Video is playing');
+  //     return Container();
+  //   } else {
+  //     return image;
+  //   }
+  // }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   widget.videoPlayerController!.dispose();
+  //   _chewieController!.dispose();
+  // }
+
   @override
-  void initState() {
-    super.initState();
-    _chewieController = chewieController();
-    videoListener();
-
-    print('####### Contador InitState ${++ChewieClass.initStateCount} #########');
-  }
-
-  chewieController() {
-    return ChewieController(
-      showControls: true,
-      aspectRatio: 1 / 1,
-      autoInitialize: true,
-      looping: widget.loop!,
-      overlay: getOverlay(),
-      showControlsOnInitialize: false,
-      videoPlayerController: widget.videoPlayerController!,
-      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-      deviceOrientationsOnEnterFullScreen: [DeviceOrientation.landscapeLeft],
-      errorBuilder: (context, errorMessage) {
-        return Center(
-          child: Text(
-            errorMessage,
-            style: const TextStyle(
-              color: Colors.white,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: false,
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 350.0,
+        padding: const EdgeInsets.all(12.0),
+        color: Colors.lightBlue[50],
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: _chewieController1 != null && _chewieController1!.videoPlayerController.value.isInitialized && _chewieController1!.isPlaying
+                    ? Chewie(
+                        controller: _chewieController1!,
+                      )
+                    : Stack(
+                        children: [
+                          image != null
+                              ? Container(
+                                  height: 350,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Image.asset(
+                                    'assets/hubla_img.jpeg',
+                                    height: 350,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                )
+                              : Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                          _chewieController1 != null
+                              ? Align(
+                                  alignment: Alignment.center,
+                                  child: ClipOval(
+                                    child: Material(
+                                      color: Colors.white, // Button color
+                                      child: InkWell(
+                                        splashColor: Colors.white, // Splash color
+                                        onTap: () {
+                                          _chewieController1!.play();
+                                          setState(() {});
+                                        },
+                                        child: SizedBox(width: 56, height: 56, child: Icon(Icons.play_arrow)),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Align(alignment: Alignment.center, child: CircularProgressIndicator())
+                        ],
+                      ),
+              ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
-  void videoListener() {
-    widget.videoPlayerController!.addListener(checkVideo);
-  }
-
-  void checkVideo() {
-    int? secondsPosition = widget.videoPlayerController?.value.position.inSeconds;
-    int? secondsDuration = widget.videoPlayerController!.value.duration.inSeconds;
-    int? minutesPosition = widget.videoPlayerController!.value.position.inMinutes;
-    Duration? actualPosition = widget.videoPlayerController?.value.position;
-    Duration? videoDuration = widget.videoPlayerController?.value.duration;
-
-    if (actualPosition == const Duration(seconds: 0, minutes: 0, hours: 0)) {
-      print('video Started');
-    }
-    if (widget.videoPlayerController!.value.isPlaying) {
-      setState(() {
-        print('playing setState');
-
-        isPlaying = true;
-      });
-    }
-    if (secondsPosition! <= secondsDuration) {
-      print('minutes:$minutesPosition, seconds:$secondsPosition');
-    }
-    if (actualPosition == videoDuration) {
-      print('video Ended');
-    }
-  }
-
-  Widget? getOverlay() {
-    if (isPlaying) {
-      print('Video is playing');
-      return Container();
-    } else {
-      return image;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _generateThumbnail();
+    initializePlayer();
   }
 
   @override
   void dispose() {
+    videoPlayerController1!.dispose();
+    _chewieController1!.dispose();
     super.dispose();
-    widget.videoPlayerController!.dispose();
-    _chewieController!.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    var prop = height / width;
+  _generateThumbnail() async {
+    String? fileName = await VideoThumbnail.thumbnailFile(
+      video: url!,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 350, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+      quality: 75,
+    );
+    final file = File(fileName!);
+    imageBytes = file.readAsBytesSync();
+    print('----image--->>>$fileName');
+    setState(() {});
+  }
 
-    print('####### Contador build ${++ChewieClass.buildCount} #########');
-    return Column(
-      children: [
-        Container(
-          color: Colors.black,
-          padding: EdgeInsets.symmetric(vertical: 8 * prop),
-          height: height * 0.3,
-          child: Chewie(
-            controller: _chewieController!,
-          ),
-        ),
-      ],
+  Future<void> initializePlayer() async {
+    if (mounted) {
+      videoPlayerController1 = VideoPlayerController.network(url!);
+      await videoPlayerController1!.initialize();
+      _createChewieController();
+      setState(() {});
+    }
+  }
+
+  _createChewieController() {
+    _chewieController1 = ChewieController(
+      deviceOrientationsOnEnterFullScreen: [DeviceOrientation.landscapeLeft],
+      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+      videoPlayerController: videoPlayerController1!,
+      aspectRatio: videoPlayerController1!.value.aspectRatio,
+      autoPlay: false,
+      looping: false,
+      allowFullScreen: true,
+      allowedScreenSleep: false,
+      autoInitialize: true,
     );
   }
 }
