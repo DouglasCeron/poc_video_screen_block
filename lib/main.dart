@@ -73,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String? onAndOff = isSecureMode ? 'On' : 'Off';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Video Player'),
@@ -86,13 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ChewieClass(),
           ),
           SizedBox(height: 50),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     setState(() => isSecureMode = !isSecureMode);
-          //     isSecureMode ? FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE) : FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-          //   },
-          //   child: Text('Secure mode : ${onAndOff} '),
-          // )
           Center(
             child: Text('Captured: ${_isCaptured ? 'YES' : 'NO '}'),
           )
