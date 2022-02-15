@@ -10,12 +10,7 @@ import Flutter
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-  //   -(void)applicationWillResignActive:(UIApplication *)application{
-  //   self.windows.hidden = YES;
-  //  }
-  //   -(void)applicationWillBecomeActive:(UIApplication *)application{
-  //   self.windows.hidden = NO;
-  //  }
+ 
 
 }
 

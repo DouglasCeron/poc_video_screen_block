@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:ios_insecure_screen_detector/ios_insecure_screen_detector.dart';
@@ -25,39 +27,49 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool isSecureMode = false;
 
   bool _isCaptured = false;
 
   final screenDetector = IosInsecureScreenDetector();
-
+  final screenAndroid = FlutterWindowManager();
   @override
   void initState() {
     super.initState();
-    screenDetector.initialize();
-    screenDetector.addListener(() {
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return Center(
-            child: Text(
-              'screenshot taken',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
+
+    if (Platform.isAndroid) {
+      FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    } else {
+      screenDetector.initialize();
+      screenDetector.addListener(
+        () {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) {
+              return Center(
+                child: Text(
+                  'Tiro? Tiro',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            },
+          );
+        },
+        (isCaptured) {
+          setState(
+            () {
+              _isCaptured = isCaptured;
+            },
           );
         },
       );
-    }, (isCaptured) {
-      setState(() {
-        _isCaptured = isCaptured;
-      });
-    });
+      isCaptured();
+    }
 
     /// Check if current screen is captured.
-    isCaptured();
   }
 
   isCaptured() async {
