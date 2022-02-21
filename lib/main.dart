@@ -48,12 +48,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             context: context,
             barrierDismissible: true,
             builder: (context) {
-              return Center(
-                child: Text(
-                  'Tiro? Tiro',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
-                ),
+              return Text(
+                'Tiro? Tiro',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
               );
             },
           );
@@ -97,9 +95,17 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             child: ChewieClass(),
           ),
           SizedBox(height: 50),
-          Center(
-            child: Text('Captured: ${_isCaptured ? 'YES' : 'NO '}'),
-          )
+          _isCaptured
+              ? Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.black,
+                )
+              : Center(
+                  child: Text(
+                    'Captured: ${_isCaptured ? 'YES' : 'NO '}',
+                  ),
+                ),
         ],
       ),
     );
