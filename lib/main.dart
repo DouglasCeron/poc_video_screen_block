@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:ios_insecure_screen_detector/ios_insecure_screen_detector.dart';
+import 'package:poc_video_player/black_screen_page.dart';
 import 'package:poc_video_player/chewie_class.dart';
 
 void main() => runApp(MyApp());
@@ -75,6 +76,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     setState(() {});
   }
 
+  changeScreen() {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlackScreenPage(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -96,11 +106,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           ),
           SizedBox(height: 50),
           _isCaptured
-              ? Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  color: Colors.black,
-                )
+              ? changeScreen()
               : Center(
                   child: Text(
                     'Captured: ${_isCaptured ? 'YES' : 'NO '}',
