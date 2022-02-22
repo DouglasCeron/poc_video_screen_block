@@ -8,12 +8,7 @@ import Flutter
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
-    // applicationWillResignActive:(UIApplication *)application{
-    //   self.window.hidden = YES;      
-    // }
-    // applicationDidBecomeActive:(UIApplication *)application{
-    //   self.window.hidden = NO;      
-    // }
+    
 
 
     GeneratedPluginRegistrant.register(with: self)
