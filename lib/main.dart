@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:ios_insecure_screen_detector/ios_insecure_screen_detector.dart';
-import 'package:poc_video_player/black_screen_page.dart';
 import 'package:poc_video_player/chewie_class.dart';
+import 'package:video_player/video_player.dart';
 
 void main() => runApp(MyApp());
 
@@ -29,15 +31,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  ChewieController? chewieController;
+  String? url = "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4";
+  late final videoPlayerController = VideoPlayerController.network(url!);
   bool isSecureMode = false;
 
-  bool _isCaptured = false;
+  bool isRecoring = false;
 
   final screenDetector = IosInsecureScreenDetector();
   final screenAndroid = FlutterWindowManager();
   @override
   void initState() {
     super.initState();
+
+    chewieController = ChewieController(
+      deviceOrientationsOnEnterFullScreen: [DeviceOrientation.landscapeLeft],
+      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+      videoPlayerController: videoPlayerController,
+      aspectRatio: 16 / 9,
+      autoPlay: false,
+      looping: false,
+      allowFullScreen: true,
+      allowedScreenSleep: false,
+      autoInitialize: true,
+    );
 
     if (Platform.isAndroid) {
       FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -56,11 +73,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               );
             },
           );
+          setState(() {});
         },
         (isCaptured) {
           setState(
             () {
-              _isCaptured = isCaptured;
+              isRecoring = isCaptured;
             },
           );
         },
@@ -72,16 +90,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   isCaptured() async {
-    _isCaptured = await screenDetector.isCaptured();
+    isRecoring = await screenDetector.isCaptured();
     setState(() {});
   }
 
-  changeScreen() {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlackScreenPage(),
-      ),
+  showDialogScreen() {
+    showDialog(
+      barrierColor: Colors.black.withOpacity(0.8),
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Container();
+      },
     );
   }
 
@@ -102,16 +122,25 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           Container(
             width: double.infinity,
             height: 290,
-            child: ChewieClass(),
+            child: ChewieClass(
+              chewieController: chewieController,
+              videoPlayerController: videoPlayerController,
+              url: url,
+            ),
           ),
           SizedBox(height: 50),
-          _isCaptured
-              ? changeScreen()
-              : Center(
-                  child: Text(
-                    'Captured: ${_isCaptured ? 'YES' : 'NO '}',
-                  ),
-                ),
+          ElevatedButton(
+            onPressed: () {
+              chewieController!.pause();
+              showDialogScreen();
+            },
+            child: Text('Record'),
+          ),
+          Center(
+            child: Text(
+              'Recording: ${isRecoring ? 'YES' : 'NO '}',
+            ),
+          ),
         ],
       ),
     );
