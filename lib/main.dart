@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             barrierDismissible: true,
             builder: (context) {
               return Text(
-                'Tiro? Tiro',
+                'Tentativa de print',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               );
